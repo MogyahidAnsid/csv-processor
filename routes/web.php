@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CSVController;
+use App\Models\Prospect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', [
+        'prospects' => Prospect::paginate()
+    ]);
 });
 
-Route::get('read', [CSVController::class, 'read'])->name('read');
-
-Route::post('upload-csv', [CSVController::class, 'upload'])->name('upload');
+Route::post('upload-csv', CSVController::class)->name('upload');

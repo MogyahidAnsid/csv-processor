@@ -16,7 +16,7 @@
 
     <body class="antialiased">
         <div>
-            <div class="mt-5 max-w-5xl mx-auto">
+            <div class="py-5 max-w-5xl mx-auto">
 
                 {{-- Success message --}}
                 @if (session('success'))
@@ -59,26 +59,71 @@
                     <div class="flex space-x-5 items-start">
                         <div class="flex-1 mt-5 flex flex-col">
                             <label for="file" class="font-semibold mb-1">CSV File:</label>
-                            <input type="file"
+                            <input id="file-input" type="file"
                                 class="rounded px-3 py-2 border bg-slate-100 file:bg-black file:border-none file:text-white file:rounded"
                                 placeholder="Enter datasource alias" name="file">
                         </div>
-                        {{-- <div class="flex-1 mt-5 flex flex-col">
-                            <label for="alias" class="font-semibold mb-1">Datasource alias:</label>
-                            <input type="text" class="rounded px-3 py-2 border" placeholder="Enter datasource alias"
-                                name="alias">
-                        </div> --}}
                     </div>
 
-                    <button type="submit"
-                        class="bg-black/70 hover:bg-black duration-300 text-white px-2 py-1 font-medium mt-5 rounded">
-                        Continue to upload CSV file
-                    </button>
+                    <div class="flex justify-end">
+                        <button id="submit-button" type="submit"
+                            class="bg-black/70 hover:bg-black duration-300 text-white px-2 py-1 font-medium mt-5 rounded">
+                            Continue to upload CSV file
+                        </button>
+                    </div>
                 </form>
+
+                <div class="mt-10">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-semibold mb-2">CSV File:</h2>
+                        <h2>{{ $prospects->count() }}</h2>
+                    </div>
+
+                    <table class="w-full table-auto">
+                        <thead>
+                            <tr class="text-left bg-black text-white">
+                                <th class="py-2">Name</th>
+                                <th class="py-2">Email</th>
+                                <th class="py-2">Phone</th>
+                                <th class="py-2">Company</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($prospects as $prospect)
+                            <tr class="odd:bg-gray-50">
+                                <td class="py-1.5">{{ $prospect->first_name . ' ' . $prospect->last_name }}</td>
+                                <td class="py-1.5">{{ $prospect->email }}</td>
+                                <td class="py-1.5">{{ $prospect->phone }}</td>
+                                <td class="py-1.5">{{ $prospect->company }}</td>
+                            </tr>
+
+                            @empty
+                            <tr>
+                                <td colspan="4">Empty data</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-5">
+                    {{ $prospects->links() }}
+                </div>
             </div>
         </div>
 
         <script>
+            const fileInput = document.getElementById('file-input');
+            const submitButton = document.getElementById('submit-button');
+
+            fileInput.addEventListener('input', () => {
+            if (fileInput.value) {
+                submitButton.removeAttribute('disabled');
+            } else {
+                submitButton.setAttribute('disabled', 'disabled');
+            }
+            });
+
             // Hide success message after 5 seconds
             setTimeout(function() {
                 document.getElementById('message').style.display = 'none';

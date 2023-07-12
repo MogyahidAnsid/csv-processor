@@ -10,23 +10,10 @@ use Symfony\Component\Uid\Ulid;
 
 class CSVController extends Controller
 {
-    public function read()
+    public function __invoke(Request $request)
     {
-        $path = "C:/Users/lenovo/Desktop/test.csv";
-
-        $rows = SimpleExcelReader::create($path)->getRows();
-
-        $rows->each(function (array $rowProperties) {
-            dd($rowProperties);
-        });
-    }
-
-    public function upload(Request $request)
-    {
-
         $request->validate([
             'file' => 'required|mimes:csv,xlsx,xls|max:2048',
-            'alias' => 'string|max:255',
         ]);
 
         // get the file path
